@@ -2,29 +2,25 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <!-- 新增移动端适配 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FPTI 金融性格测评</title>
     <link rel="stylesheet" href="style.css">
+    <!-- 截图插件（纯前端，免费） -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-    <!-- 起始页（全新结构，对齐参考图） -->
+    <!-- 首页 -->
     <div id="home" class="page">
-        <!-- 1. 顶部导航栏 -->
         <div class="top-nav">
             <button class="back-btn">×</button>
             <div class="nav-title">FPTI 金融性格测评</div>
             <button class="menu-btn">☰</button>
         </div>
-
-        <!-- 2. 主视觉横幅区 -->
         <div class="banner">
             <h1 class="main-title">FPTI</h1>
             <p class="sub-title">金融性格测评：测出你的投资灵魂</p>
             <p class="desc">全球首个专业金融人格测试，揭秘你的投资底层逻辑</p>
         </div>
-
-        <!-- 3. 版本选择卡片 -->
         <div class="version-cards">
             <div class="card active">
                 <h3>金融标准版</h3>
@@ -33,39 +29,115 @@
                 <div class="check">✓</div>
             </div>
         </div>
-
-        <!-- 4. 行动引导语 -->
         <p class="guide-text">你是哪种金融人格？立即测试解锁答案</p>
-
-        <!-- 5. 核心开始按钮（保留原有逻辑） -->
         <button onclick="startQuiz()" class="start-btn">开始测试 →</button>
-
-        <!-- 6. 辅助功能链接 -->
-        <a href="#" class="history-link">查看历史报告 ></a>
-
-        <!-- 7. 测试须知区 -->
-        <div class="notice">
+        <a href="javascript:showHistoryReport()" class="history-link">查看历史报告 ></a>
+        <div class="notice" onclick="toggleNotice()">
             <h4>测试须知</h4>
-            <span>↓</span>
+            <span id="notice-arrow">↓</span>
+        </div>
+        <!-- 历史报告弹窗 -->
+        <div id="history-report-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>我的历史报告</h3>
+                    <button onclick="closeHistoryReport()" class="close-btn">×</button>
+                </div>
+                <div class="modal-body" id="history-list">
+                    <p style="text-align:center;color:#999">暂无历史记录，快去测试吧~</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- 测试页（原代码无修改） -->
+    <!-- 测试页 -->
     <div id="quiz" class="page" style="display:none;">
         <h2 id="question"></h2>
         <div id="options"></div>
     </div>
 
-    <!-- 结果页（原代码无修改） -->
+    <!-- 结果页（新增：灵魂伴侣+死对头+截图+二维码） -->
     <div id="result" class="page" style="display:none;">
         <h2>你的人格类型是：</h2>
         <img id="res-img" src="" alt="人格头像" style="width: 100%; border-radius: 20px; margin: 20px 0;">
         <h1 id="res-name"></h1>
         <h3 id="res-title"></h3>
         <p id="res-desc"></p>
+
+        <!-- 社交裂变按钮：核心功能 -->
+        <button class="social-btn" onclick="showMatch()">🔍 我的投资灵魂伴侣/死对头</button>
+        <button class="social-btn" onclick="captureResult()">📸 一键截图发朋友圈</button>
+        <p id="match-text" style="display:none; text-align:center; color:#7A6AF1; font-weight:bold;"></p>
+
+        <!-- 引流二维码（替换为你的网站链接二维码） -->
+        <div style="text-align:center; margin:20px 0;">
+            <p>扫码测一测你的金融人格</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://你的网站网址" alt="扫码测试" style="width:120px;">
+        </div>
+
         <button onclick="location.reload()">再测一次</button>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // 1. 本地存储历史报告（不占你的空间！）
+        function saveResultToLocal(res) {
+            let history = JSON.parse(localStorage.getItem('fpti_history') || '[]');
+            history.unshift({time:new Date().toLocaleString(),...res});
+            if(history.length>10) history=history.slice(0,10);
+            localStorage.setItem('fpti_history',JSON.stringify(history));
+        }
+        function showHistoryReport(){
+            const modal=document.getElementById('history-report-modal');
+            const list=document.getElementById('history-list');
+            const history=JSON.parse(localStorage.getItem('fpti_history')||'[]');
+            list.innerHTML=history.length===0?'<p style="text-align:center;color:#999">暂无记录</p>':history.map(item=>`
+                <div class="report-item">
+                    <p>时间：${item.time}</p><p>人格：${item.name}</p>
+                    <button class="view-detail-btn" onclick="alert('${item.desc}')">查看详情</button>
+                </div>
+            `).join('');
+            modal.style.display='flex';
+        }
+        function closeHistoryReport(){document.getElementById('history-report-modal').style.display='none';}
+        function toggleNotice(){alert('测试仅供娱乐，不构成投资建议');}
+
+        // 2. 社交裂变：灵魂伴侣/死对头
+        function showMatch(){
+            const type=document.getElementById('match-type').innerText;
+            // 自动匹配对立/互补人格（可自定义）
+            const match={
+                opponent:"你的投资死对头：朋友圈韭菜 | 追涨杀跌型",
+                soulmate:"你的投资灵魂伴侣：沃伦·巴菲特 | 价值投资型"
+            };
+            document.getElementById('match-text').innerText=`${match.soulmate}\n${match.opponent}`;
+            document.getElementById('match-text').style.display='block';
+            // 一键复制分享文案
+            navigator.clipboard.writeText(`我测出了金融人格：${document.getElementById('res-name').innerText}！快来测测谁是我的投资灵魂伴侣～`);
+            alert('分享文案已复制，发给朋友裂变吧！');
+        }
+
+        // 3. 一键截图结果页
+        function captureResult(){
+            html2canvas(document.getElementById('result')).then(canvas=>{
+                const a=document.createElement('a');
+                a.download='FPTI金融人格测试.png';
+                a.href=canvas.toDataURL('image/png');
+                a.click();
+                alert('截图已保存，发朋友圈自带二维码，别人扫码直接测试！');
+            });
+        }
+    </script>
+
+    <style>
+        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:1000;}
+        .modal-content{background:white;width:90%;max-width:500px;border-radius:20px;max-height:80vh;overflow-y:auto;}
+        .modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px;border-bottom:1px solid #eee;}
+        .close-btn{background:none;border:none;font-size:24px;cursor:pointer;box-shadow:none;}
+        .report-item{border-bottom:1px solid #eee;padding:10px 0;}
+        .social-btn{width:100%;padding:15px;margin:10px 0;border-radius:15px;background:#f0eeff;color:#7A6AF1;border:none;font-weight:bold;cursor:pointer;}
+        .view-detail-btn{background:#7A6AF1;color:white;border:none;padding:8px 15px;border-radius:10px;cursor:pointer;}
+        .notice{display:flex;justify-content:space-between;align-items:center;padding:15px;background:#f8f9fa;border-radius:12px;margin-top:20px;cursor:pointer;}
+    </style>
 </body>
 </html>
