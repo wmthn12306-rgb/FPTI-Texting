@@ -1,0 +1,249 @@
+:root {
+    /* 参考图主色调：青蓝渐变 + 紫色按钮 */
+    --primary-color: #0F7D77;     /* 青绿色主色 */
+    --accent-color: #7A6AF1;      /* 紫色按钮 */
+    --accent-hover: #6557D9;
+    --bg-color: linear-gradient(135deg, #E6F7F6, #F5FFFE);
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --border-color: rgba(0,0,0,0.05);
+    --shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+    background: var(--bg-color); 
+    margin: 0; 
+    padding: 10px; 
+    display: flex; 
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* 页面容器 */
+.page { 
+    background: var(--card-bg); 
+    backdrop-filter: blur(20px);
+    padding: 20px; 
+    border-radius: 28px; 
+    box-shadow: var(--shadow); 
+    width: 100%; 
+    max-width: 420px; 
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    animation: fadeIn 0.6s ease;
+    margin: 10px 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====================== 起始页全新样式 ====================== */
+/* 顶部导航栏 */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+.back-btn, .menu-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.nav-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 主视觉横幅 */
+.banner {
+    text-align: center;
+    margin: 20px 0;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #0F7D77, #34B3A8);
+    border-radius: 20px;
+    color: white;
+}
+.main-title {
+    font-size: 48px;
+    font-weight: 900;
+    margin: 0;
+}
+.sub-title {
+    font-size: 18px;
+    margin: 5px 0;
+    font-weight: 500;
+}
+.desc {
+    font-size: 14px;
+    opacity: 0.9;
+    margin: 5px 0 0 0;
+}
+
+/* 版本卡片 */
+.version-cards {
+    margin: 25px 0;
+}
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    position: relative;
+    border: 2px solid transparent;
+}
+.card.active {
+    border-color: var(--accent-color);
+}
+.card h3 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 18px;
+}
+.card p {
+    margin: 0 0 8px 0;
+    color: #666;
+    font-size: 14px;
+}
+.hot {
+    font-size: 12px;
+    color: var(--accent-color);
+    font-weight: 600;
+}
+.check {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 24px;
+    height: 24px;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 12px;
+}
+
+/* 引导语 */
+.guide-text {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin: 20px 0;
+}
+
+/* 开始按钮 */
+.start-btn {
+    width: 100%;
+    padding: 20px;
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(122, 106, 241, 0.3);
+    transition: all 0.3s ease;
+}
+.start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(122, 106, 241, 0.4);
+}
+
+/* 历史报告链接 */
+.history-link {
+    display: block;
+    text-align: center;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 14px;
+    margin: 15px 0;
+    font-weight: 500;
+}
+
+/* 测试须知 */
+.notice {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #F8F9FA;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+.notice h4 {
+    margin: 0;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+}
+.notice span {
+    color: #666;
+    font-size: 16px;
+}
+
+/* ====================== 原有测试/结果页样式（保留优化） ====================== */
+h2 { 
+    font-size: 20px; 
+    color: #333; 
+    font-weight: 600;
+    margin: 20px 0;
+    text-align: center;
+}
+
+#options button {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    margin: 12px 0;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    background: white;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+#options button:hover {
+    border-color: var(--accent-color);
+    background: #F8F5FF;
+}
+
+#res-img { 
+    width: 100%; 
+    border-radius: 20px; 
+    margin: 20px 0; 
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12); 
+}
+#res-name { 
+    font-size: 28px; 
+    font-weight: 800; 
+    color: #333; 
+    margin: 10px 0; 
+    text-align: center;
+}
+#res-title { 
+    font-size: 16px; 
+    color: var(--accent-color); 
+    margin-bottom: 16px; 
+    font-weight: 600;
+    text-align: center;
+}
+#res-desc { 
+    font-size: 15px; 
+    color: #666; 
+    line-height: 1.7; 
+    text-align: justify; 
+}
