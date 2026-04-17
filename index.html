@@ -104,16 +104,20 @@
 
         // 2. 社交裂变：灵魂伴侣/死对头
         function showMatch(){
-            const type=document.getElementById('match-type').innerText;
-            // 自动匹配对立/互补人格（可自定义）
-            const match={
-                opponent:"你的投资死对头：朋友圈韭菜 | 追涨杀跌型",
-                soulmate:"你的投资灵魂伴侣：沃伦·巴菲特 | 价值投资型"
-            };
-            document.getElementById('match-text').innerText=`${match.soulmate}\n${match.opponent}`;
-            document.getElementById('match-text').style.display='block';
-            // 一键复制分享文案
-            navigator.clipboard.writeText(`我测出了金融人格：${document.getElementById('res-name').innerText}！快来测测谁是我的投资灵魂伴侣～`);
+        const name = document.getElementById('res-name').innerText;
+        // 智能匹配：每个人格对应专属伴侣+死对头（可自定义）
+        const matchMap = {
+            "沃伦·巴菲特": { soulmate: "查理·芒格", opponent: "朋友圈韭菜" },
+            "查理·芒格": { soulmate: "沃伦·巴菲特", opponent: "朋友圈韭菜" },
+            "朋友圈韭菜": { soulmate: "无", opponent: "所有投资大师" }
+        };
+        const defaultMatch = { soulmate: "契合的投资伙伴", opponent: "追涨杀跌型选手" };
+        const match = matchMap[name] || defaultMatch;
+        
+        document.getElementById('match-text').innerText=`💖 灵魂伴侣：${match.soulmate}\n💢 投资死对头：${match.opponent}`;
+        document.getElementById('match-text').style.display='block';
+        // 一键复制分享文案
+        navigator.clipboard.writeText(`我测出了FPTI金融人格：${name}！快来测测你的投资灵魂伴侣～`).then(()=>{
             alert('分享文案已复制，发给朋友裂变吧！');
         }
 
