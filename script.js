@@ -100,44 +100,77 @@ function startQuiz(){
     document.getElementById('home').style.display='none';
     document.getElementById('quiz').style.display='block';
     answers=new Array(questions.length).fill(null);
+    currentQ = 0;
     showQuestion();
 }
 
-function showQuestion(){
-    const q=questions[currentQ];
-    document.getElementById('question').innerText=q.question;
-    const optDiv=document.getElementById('options');
-    optDiv.innerHTML='';
-    const total=questions.length;
-    const current=currentQ+1;
-    document.getElementById('progress-fill').style.width=(current/total)*100+'%';
-    document.getElementById('progress-text').innerText=`${current}/${total}`;
-    document.getElementById('prev-btn').disabled=currentQ===0;
-    q.options.forEach(opt=>{
-        const btn=document.createElement('button');
-        btn.innerText=opt.t;
-        if(answers[currentQ]?.type===opt.type)btn.classList.add('selected');
-        btn.onclick=()=>{
-            answers[currentQ]=opt;
-            currentQ++;
-            currentQ<total?showQuestion():showResult();
+// 修复：彻底解决同题type重复导致的多选问题
+function showQuestion() {
+    const q = questions[currentQ];
+    document.getElementById('question').innerText = q.question;
+    const optDiv = document.getElementById('options');
+    optDiv.innerHTML = '';
+
+    const total = questions.length;
+    const current = currentQ + 1;
+    document.getElementById('progress-fill').style.width = (current/total)*100 + '%';
+    document.getElementById('progress-text').innerText = `${current}/${total}`;
+
+    // 按钮状态
+    document.getElementById('prev-btn').disabled = currentQ === 0;
+    document.getElementById('next-btn').innerText = currentQ === total - 1 ? "查看结果" : "下一题 →";
+
+    // 渲染选项（核心修复：按「选项对象」判断选中，不依赖type）
+    q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.innerText = opt.t;
+        btn.classList.remove('selected');
+
+        // 只选中用户实际点击的那个选项（直接比较对象，不受重复type影响）
+        if (answers[currentQ] === opt) {
+            btn.classList.add('selected');
+        }
+
+        btn.onclick = () => {
+            // 1. 清空当前题的旧答案
+            answers[currentQ] = null;
+            // 2. 清空所有按钮的选中状态
+            document.querySelectorAll('#options button').forEach(b => b.classList.remove('selected'));
+            // 3. 设置新答案并高亮当前按钮
+            answers[currentQ] = opt;
+            btn.classList.add('selected');
         };
         optDiv.appendChild(btn);
     });
 }
 
-function prevQuestion(){
-    if(currentQ>0){currentQ--;showQuestion();}
+function prevQuestion() {
+    if (currentQ > 0) {
+        currentQ--;
+        showQuestion();
+    }
 }
 
-// 全局图表实例，防止重复绘制
+function nextQuestion() {
+    const total = questions.length;
+    if (!answers[currentQ]) {
+        alert("请选择一个选项再继续~");
+        return;
+    }
+    if (currentQ < total - 1) {
+        currentQ++;
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
 let personalityChart = null;
 
 function showResult(){
     let scores={A:0,B:0,C:0,D:0,E:0,F:0,G:0,H:0};
     answers.forEach(ans=>ans&&scores[ans.type]++);
 
-    // 计算四大维度得分（0-100）
     const dim1 = scores.A + scores.B === 0 ? 50 : Math.round(scores.A/(scores.A+scores.B)*100);
     const dim2 = scores.C + scores.D === 0 ? 50 : Math.round(scores.C/(scores.C+scores.D)*100);
     const dim3 = scores.E + scores.F === 0 ? 50 : Math.round(scores.E/(scores.E+scores.F)*100);
@@ -177,9 +210,7 @@ function showResult(){
     document.getElementById('res-desc').innerText=res.desc;
     document.getElementById('res-img').src=res.img;
 
-    // ========== 绘制人格维度雷达图 ==========
     const ctx = document.getElementById('personalityChart').getContext('2d');
-    // 销毁旧图表
     if(personalityChart) personalityChart.destroy();
     personalityChart = new Chart(ctx, {
         type: 'radar',
