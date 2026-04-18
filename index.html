@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FPTI金融性格测评</title>
     <link rel="stylesheet" href="style.css">
-    <!-- 引入图表库 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -48,10 +47,13 @@
         </div>
         <h2 id="question"></h2>
         <div id="options"></div>
-        <button id="prev-btn" class="prev-btn" onclick="prevQuestion()" disabled>← 上一题</button>
+        <div class="quiz-buttons">
+            <button id="prev-btn" class="prev-btn" onclick="prevQuestion()">← 上一题</button>
+            <button id="next-btn" class="next-btn" onclick="nextQuestion()">下一题 →</button>
+        </div>
     </div>
 
-    <!-- 结果页 + 新增维度雷达图 -->
+    <!-- 结果页 -->
     <div id="result" class="page" style="display:none;">
         <h2>你的金融人格</h2>
         <h1 id="res-name"></h1>
@@ -59,7 +61,6 @@
         <h3 id="res-title"></h3>
         <img id="res-img" src="" alt="人格头像" class="result-img">
         
-        <!-- 👇 新增：投资人格维度雷达图 -->
         <div class="chart-box">
             <canvas id="personalityChart"></canvas>
         </div>
@@ -71,8 +72,7 @@
 
         <div class="qrcode-box">
             <p>扫码测一测你的投资人格</p>
-            <img src="fpti-qr.png" alt="FPTI金融性格测评" style="width:120px;">
-            <p style="font-size:12px;color:#6E60E7;margin-top:8px;">微信被拦？长按二维码直接识别</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://page.fpti.cn" alt="二维码">
         </div>
 
         <button onclick="location.reload()" class="restart-btn">重新测试</button>
@@ -91,7 +91,6 @@
 
     <script src="script.js"></script>
     <script>
-        // 本地存储
         function saveResultToLocal(res) {
             let history = JSON.parse(localStorage.getItem('fpti_history') || '[]');
             history.unshift({ time: new Date().toLocaleString(), ...res });
@@ -102,8 +101,8 @@
             const modal=document.getElementById('history-report-modal');
             const list=document.getElementById('history-list');
             const history=JSON.parse(localStorage.getItem('fpti_history')||'[]');
-            list.innerHTML=history.length===0?'<p class="empty-tip">暂无历史记录</p>':history.map(item=>`
-                <div class="report-item"><p>${item.time}</p><h4>${item.name} | ${item.title}</h4></div>
+            list.innerHTML=history.length===0?'<p class=\"empty-tip\">暂无历史记录</p>':history.map(item=>`
+                <div class=\"report-item\"><p>${item.time}</p><h4>${item.name} | ${item.title}</h4></div>
             `).join('');
             modal.style.display='flex';
         }
