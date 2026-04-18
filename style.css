@@ -8,6 +8,7 @@
     --text-gray: #9CA3AF;
     --radius-normal: 14px;
     --radius-large: 20px;
+    --shadow-light: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 * {
@@ -127,7 +128,7 @@ body {
     padding: 18px;
     border: none;
     border-radius: var(--radius-normal);
-    background: linear-gradient(135deg, var(--accent-color), var(--accent-color));
+    background: var(--accent-color);
     color: white;
     font-size: 18px;
     font-weight: 600;
@@ -183,28 +184,6 @@ body {
     display: block;
 }
 
-/* 调整「上一题」按钮间距，和选项区分开 */
-.prev-btn {
-    width: 100%;
-    padding: 12px;
-    margin: 20px 0 0 0; /* 新增上边距，和选项拉开距离 */
-    border: 1px solid var(--accent-color);
-    border-radius: var(--radius-normal);
-    background: white;
-    color: var(--accent-color);
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.prev-btn:disabled {
-    border-color: #eee;
-    color: #999;
-    cursor: not-allowed;
-}
-.prev-btn:hover:not(:disabled) {
-    background: var(--accent-light);
-}
-
 #options button {
     display: block;
     width: 100%;
@@ -224,9 +203,43 @@ body {
 }
 #options button.selected {
     border-color: var(--accent-color);
-    background: var(--accent-light);
-    color: var(--accent-color);
+    background: var(--accent-color) !important;
+    color: white !important;
     font-weight: 600;
+}
+
+/* 核心修复：上下一题按钮 大小完全一致 */
+.quiz-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+.quiz-buttons button {
+    flex: 1;
+    flex-basis: 0;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.quiz-buttons .prev-btn {
+    background: #f1f1f1;
+    color: #333;
+}
+.quiz-buttons .next-btn {
+    background: #6E60E7;
+    color: white;
+}
+.quiz-buttons button:disabled {
+    background: #ccc !important;
+    color: #999 !important;
+    cursor: not-allowed;
+}
+.quiz-buttons button:hover:not(:disabled) {
+    opacity: 0.9;
 }
 
 .result-tag {
@@ -337,7 +350,7 @@ body {
     padding: 40px 20px;
     color: #999;
 }
-/* 新增：雷达图容器样式 */
+
 .chart-box {
     width: 100%;
     height: 260px;
